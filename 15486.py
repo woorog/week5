@@ -18,4 +18,5 @@ for i in range(num):
     if dp[i]>dp[i+1]:
         dp[i+1]=dp[i]
 
+
 print(dp[num])
