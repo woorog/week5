@@ -1,23 +1,12 @@
 import sys
+input=sys.stdin.readline
+N, M = map(int, input().split())
+true_counts = list(map(int, input().split()))
+true_people = true_counts[1:]
 
-hu,tc=map(int,sys.stdin.readline().split())
-
-truep=list(map(int,sys.stdin.readline().split()))
-lier=[]
-
-if truep[0]!=0:
-    del truep[0]
-    for i in truep:
-
-        lier.append(i)
-
-print(lier)
-
-
-
-reps = list(range(hu+1))
-print(reps)
+reps = list(range(N + 1))  # 대표 노드 배열 초기화
 sets = {}
+
 def find(n):
     if reps[n] != n:
         reps[n] = find(reps[n])
@@ -29,39 +18,27 @@ def union(node1, node2):
     if rep1 != rep2:
         reps[rep2] = rep1
 
-case=[]
+parties = []
 
-for _ in range(tc):
-    data=list(map(int,sys.stdin.readline().split()))
-    del data[0]
-    case.append(data)
-    if len(data)>1:
-        for i in data:
-            print(data[0],i)
-            union(data[0],i)
-
-print(case)
-print(reps)
+for _ in range(M):
+    data = list(map(int, input().split()))[1:]
+    parties.append(data)
+    for i in range(1, len(data)):
+        union(data[0], data[i])
 
 
+for person in true_people:
+    find(person)
 
-for i in range(hu):
-    rep = find(i)  # i 번째 원소가 속한 집합의 대표 노드를 찾음
-    if rep in sets:
-        sets[rep].append(i)  # 이미 sets에 대표 노드가 있으면, 해당 집합에 원소 추가
-    else:
-        sets[rep] = [i]  # 대표 노드가 sets에 없으면, 새 집합으로 추가
-
-print(sets)
-ans=0
-
-
+cannot_lie = set()
+for i, party in enumerate(parties):
+    for person in party:
+        if find(person) in [find(tp) for tp in true_people]:
+            cannot_lie.add(i)
+            break
 #
-# for i in sets:
-#     low=100000000
-#     for k in sets[i]:
-#         if costs[k]<low:
-#             low=costs[k]
-#
-#     ans+=low
+# print(cannot_lie)
 
+
+lie_possible = M - len(cannot_lie)
+print(lie_possible)
